@@ -1,0 +1,42 @@
+import java.io.IOException;
+import java.net.*;
+
+public class Client {
+
+    public static void main(String[] args) throws IOException {
+        byte[] message = "Ala ma kota".getBytes();
+
+        String serverAddress = "localhost";
+        InetAddress address = InetAddress.getByName(serverAddress);
+        int serverPort = 6666;
+
+        DatagramPacket datagramPacketToSend = new DatagramPacket(
+                message,
+                message.length,
+                address,
+                serverPort
+        );
+
+        DatagramSocket socket = new DatagramSocket();
+        socket.send(datagramPacketToSend);
+        
+        DatagramPacket datagramPacketToReceive = new DatagramPacket(
+                new byte[1460],
+                1460
+        );
+        socket.receive(datagramPacketToReceive);
+
+        String dane = new String(datagramPacketToReceive.getData(), 0, datagramPacketToReceive.getLength());
+        System.out.println("Dane odebrane: " + dane + "_");
+        System.out.println(dane.length());
+        System.out.println(datagramPacketToReceive.getData().length);
+        System.out.println(datagramPacketToReceive.getLength());
+        System.out.println("port: " + datagramPacketToReceive.getPort());
+
+        for (int i = 0; i < datagramPacketToReceive.getLength(); i++) {
+            System.out.print(datagramPacketToReceive.getData()[i]+" ");
+        }
+
+        socket.close();
+    }
+}
