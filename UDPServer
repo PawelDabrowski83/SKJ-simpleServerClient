@@ -1,0 +1,34 @@
+import java.io.IOException;
+import java.net.*;
+
+public class Server {
+
+    public static void main(String[] args) throws IOException {
+        String message = "test";
+        int SERVER_PORT = 6666;
+
+        String serverAddress = "localhost";
+        InetAddress serverAddressReal = InetAddress.getByName(serverAddress);
+
+        DatagramSocket datagramSocket = new DatagramSocket(SERVER_PORT);
+
+        DatagramPacket datagramPacketToReceive = new DatagramPacket(
+                new byte[1000],
+                1000
+        );
+
+        datagramSocket.receive(datagramPacketToReceive);
+        InetAddress clientAddress = datagramPacketToReceive.getAddress();
+        System.out.println("Message received");
+
+        DatagramPacket datagramPacketToSend = new DatagramPacket(
+                message.getBytes(),
+                message.getBytes().length,
+                clientAddress,
+                SERVER_PORT
+        );
+        datagramSocket.send(datagramPacketToSend);
+        System.out.println("Message send");
+        datagramSocket.close();
+    }
+}
